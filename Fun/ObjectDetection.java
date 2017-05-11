@@ -6,34 +6,45 @@ import lejos.nxt.*;
 import lejos.robotics.objectdetection.*;
 
 
-public class ObjectDetection 
+public class ObjectDetection implements FeatureListener
 {
     public static void main(String[] args)
     {
+        UltrasonicSensor us = new UltrasonicSensor(SensorPort.S3);
+        ObjectDetection listener = new ObjectDetection();
+        FeatureDetector fd = new RangeFeatureDetector(us, 80, 500);
+        fd.addListener(listener);
+        DifferentialPilot hook = new DifferentialPilot(56, 56, 162, Motor.B, Motor.C, false);
+        
+        
         System.out.println("Program 2");
         Button.waitForAnyPress();
-       
-        DifferentialPilot hook = new DifferentialPilot(56, 56, 162, Motor.B, Motor.C, false);
         hook.forward();
-        Button.waitForAnyPress();
-        hook.stop();
+        listener.featureDetected(fd.scan(), fd);
+        
+        
         /*
-        
-        UltrasonicSensor us = new UltrasonicSensor(SensorPort.S3);
-        //ObjectDetection listener = new ObjectDetection();
-        FeatureDetector fd = new RangeFeatureDetector(us, 80, 500);
-        //fd.addListener(listener);
-        
-        if (fd.scan() != null)
+        Feature scan = fd.scan();
+        if (scan != null)
         {
-            if (fd.scan().getRangeReading().getRange() < 5)
+            if (scan.getRangeReading().getRange() < 5)
             {
-                hook.stop();
                 System.out.println("object detected");
+                Button.waitForAnyPress();
+                hook.stop();
             }
         }  
-        
         */
+        
     }
     
+    public void featureDetected(Feature feature, FeatureDetector detector)
+    {
+        int range = (int)feature.getRangeReading().getRange();
+        DifferentialPilot hook = new DifferentialPilot(56, 56, 162, Motor.B, Motor.C, false);
+        if (range < 10)
+        {
+            hook.stop();
+        }
+    }
 }
