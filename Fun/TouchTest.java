@@ -5,15 +5,10 @@ import lejos.robotics.navigation.DifferentialPilot;
 import lejos.nxt.Motor;
 import lejos.nxt.Button;
 
-/**
- * Write a description of class TouchTest here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
+
 public class TouchTest
 {
-    public static void main(String[]args) 
+    public static void main(String[] args)
     {
         DifferentialPilot hook = new DifferentialPilot(56, 56, 162, Motor.B, Motor.C, false);
         TouchSensor touch = new TouchSensor(SensorPort.S1);
@@ -23,12 +18,12 @@ public class TouchTest
         if(touch.isPressed())
         {
             hook.stop();
-            hook.backward();
+            //hook.backward();
         }
-        else
-        {
-            hook.forward();
-        }
+        //else
+        //{
+           // hook.forward();
+        //}
     }
 
 
