@@ -1,4 +1,3 @@
-
 import lejos.nxt.Button;
 import lejos.nxt.Motor;
 import lejos.robotics.navigation.DifferentialPilot;

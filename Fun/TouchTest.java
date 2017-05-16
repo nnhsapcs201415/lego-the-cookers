@@ -14,12 +14,14 @@ public class TouchTest
         TouchSensor touch = new TouchSensor(SensorPort.S1);
         System.out.println("Program 3");
         Button.waitForAnyPress();
-        hook.forward();
-        if(touch.isPressed())
+        
+        while(!touch.isPressed())
         {
-            hook.stop();
+            hook.forward();
             //hook.backward();
         }
+        hook.stop();
+        Button.waitForAnyPress();
         //else
         //{
            // hook.forward();
