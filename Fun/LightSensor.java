@@ -27,9 +27,10 @@ public class LightSensor implements SensorPortListener
 
     public void stateChanged(SensorPort aSource, int aOldValue, int aNewValue)
     {
-        System.out.println("Color Change");
-        if (Math.abs(aOldValue - aNewValue) > 100)
+        System.out.println(aNewValue);
+        if (aNewValue > 850)
         {
+            System.out.println("Stopping");
             hook.stop();
         }
     }
