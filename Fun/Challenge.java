@@ -20,33 +20,51 @@ public class Challenge implements FeatureListener, SensorPortListener
         this.hook = new DifferentialPilot(56, 56, 162, Motor.B, Motor.C, false);
         this.us = new UltrasonicSensor(SensorPort.S3);
         SensorPort.S1.addSensorPortListener(this);
-        this.fd = new RangeFeatureDetector(us, 80, 100);
+        this.fd = new RangeFeatureDetector(us, 400, 300);
         this.fd.addListener(this);
-        System.out.println("Challenge");
+    }
+    
+    public void scanForNothing()
+    {
+        while (this.count != 4)
+        {
+            if (fd.scan() == null)
+            {
+                this.count = 4;
+                hook.forward();
+            }
+        }
     }
     
     public static void main(String[] args)
     {
-        FeatureListener listener = new Challenge();       
+        System.out.println("Challenge");
+        Button.waitForAnyPress();
+        Challenge listener = new Challenge();
+        listener.scanForNothing();
         Button.waitForAnyPress();
     }
     
+    
+    
     public void featureDetected(Feature feature, FeatureDetector detector)
     {
-        System.out.println("Feature Detected");
         int range = (int)feature.getRangeReading().getRange();
         if (count < 4)
         {
-            if (range < 10)
+            if (range < 15)
             {
                 hook.rotate(90);
                 this.count++;
+                System.out.println("Wall Detected");
             }
-            else if (range > 10)
+            /*
+            else if (range > 15)
             {
                 hook.forward();
-                this.count++;
+                this.count = 4;
             }
+            */
         }
     }
     
@@ -55,8 +73,8 @@ public class Challenge implements FeatureListener, SensorPortListener
         System.out.println(aNewValue);
         if (aNewValue > 850)
         {
-            System.out.println("Stopping");
-            hook.stop();
+            System.out.println("Seeing dark");
+            //hook.stop();
         }
     }
 }
