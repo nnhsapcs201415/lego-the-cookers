@@ -7,14 +7,16 @@ import lejos.nxt.SensorPortListener;
 import lejos.nxt.LCD;
 import lejos.nxt.SensorPort;
 import lejos.nxt.TouchSensor;
+import lejos.util.Delay;
 
 public class Challenge implements FeatureListener, SensorPortListener
 {
     private DifferentialPilot hook;
     private UltrasonicSensor us;
     private FeatureDetector fd;
-    private int count = 0;
-    private int state = 0;
+    private LightSensor ls;
+    private int count = 0; //0
+    private int state = 0; //0
     // 0: In box
     // 1: Searching for cans
     // 2: Can seen
@@ -23,10 +25,13 @@ public class Challenge implements FeatureListener, SensorPortListener
     public Challenge()
     {
         this.hook = new DifferentialPilot(56, 56, 162, Motor.B, Motor.C, false);
-        this.hook.setTravelSpeed(250);
+        this.hook.setTravelSpeed(200);
+        this.hook.setRotateSpeed(100);
         this.us = new UltrasonicSensor(SensorPort.S3);
+        this.ls = new LightSensor(SensorPort.S1);
+        this.ls.setFloodlight(true);
         SensorPort.S1.addSensorPortListener(this);
-        this.fd = new RangeFeatureDetector(us, 400, 300);
+        this.fd = new RangeFeatureDetector(us, 150, 30);
         this.fd.addListener(this);
     }
 
@@ -37,8 +42,8 @@ public class Challenge implements FeatureListener, SensorPortListener
             if (fd.scan() == null)
             {
                 this.count = 4;
-                this.state = 1;
                 this.hook.travel(300);
+                this.state = 1;
             }
         }
     }
@@ -56,14 +61,13 @@ public class Challenge implements FeatureListener, SensorPortListener
             else if (this.state == 1) // Searching for cans
             {
                 System.out.println(this.state);
-                this.hook.travel(300);
-                this.hook.rotate(450);
-
+                this.hook.rotateLeft();
+                
             }
             else if (this.state == 2) // Can seen
             {
                 System.out.println(this.state);
-                this.hook.travel(800);
+                this.hook.forward();
             }
             else if (this.state == 3) // Line hit
             {
@@ -72,6 +76,7 @@ public class Challenge implements FeatureListener, SensorPortListener
                 this.hook.rotate(180);
                 this.state = 1;
             }
+            Delay.msDelay(100);
         }
 
     }
@@ -88,8 +93,9 @@ public class Challenge implements FeatureListener, SensorPortListener
 
     public void featureDetected(Feature feature, FeatureDetector detector)
     {
-        int range = (int)feature.getRangeReading().getRange();
-        if (count < 4)
+        int range = (int)feature.getRangeReading().getRange();     
+        System.out.println("Feature Detected");
+        if (this.count < 4)
         {
             if (range < 15)
             {
@@ -98,18 +104,21 @@ public class Challenge implements FeatureListener, SensorPortListener
                 System.out.println("Wall Detected");
             }
         }
-        else if (count == 4)
+        else if (this.count >= 4)
         {
+            System.out.println("FEATURE DETECTED");
+            //this.hook.stop();
             this.state = 2;
         }
     }
-
+    
     public void stateChanged(SensorPort aSource, int aOldValue, int aNewValue)
     {
         //System.out.println(aNewValue);
-        if (aNewValue > 850)
+        if (this.count >= 4 && aNewValue > 700)
         {
             this.state = 3;
         }
     }
+    
 }

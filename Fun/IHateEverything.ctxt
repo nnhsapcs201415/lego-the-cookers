@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.params=
-comment0.target=LightSensor()
+comment0.target=IHateEverything()
 comment1.params=args
 comment1.target=void\ main(java.lang.String[])
 comment2.params=aSource\ aOldValue\ aNewValue

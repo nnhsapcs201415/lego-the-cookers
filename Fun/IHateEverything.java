@@ -6,11 +6,11 @@ import lejos.nxt.Motor;
 import lejos.nxt.Button;
 import lejos.nxt.SensorPortListener;
 
-public class LightSensor implements SensorPortListener
+public class IHateEverything implements SensorPortListener
 {
     private DifferentialPilot hook;
 
-    public LightSensor()
+    public IHateEverything()
     {
         this.hook = new DifferentialPilot(56, 56, 162, Motor.B, Motor.C, false);
         SensorPort.S1.addSensorPortListener(this);
@@ -21,7 +21,7 @@ public class LightSensor implements SensorPortListener
 
     public static void main(String[] args)
     {
-        SensorPortListener listener = new LightSensor();
+        SensorPortListener listener = new IHateEverything();
         Button.waitForAnyPress();
     }
 
